@@ -1,4 +1,7 @@
 # PollTest
 
-Learning Swift... This time: is split(_:_:_:isSeparator:) leaking?
-
+Learning Swift... This time: is 
+```swift
+split(_:_:_:isSeparator:)
+```
+leaking?
