@@ -63,7 +63,7 @@ class ViewController: UIViewController {
                         println(ret.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
                         println("*******************");
                         let bar = self.splitCSV(ret)
-                        completionHandler(nil, nil)
+                        completionHandler(bar, nil)
                     }
             }
         }
@@ -72,9 +72,9 @@ class ViewController: UIViewController {
 
     func splitCSV(string: String) -> [[String : AnyObject]] {
         var newArray = [[String : AnyObject]]()
-        var linesArray = split(string) {$0 == "\n"}
+        var linesArray = string.componentsSeparatedByString("\n")
         for line in linesArray {
-            var splittedLine = split(line, allowEmptySlices: true) {$0 == ";"}
+            var splittedLine = line.componentsSeparatedByString(";")
             if splittedLine.count < 21 {
                 println("No result!")
             }
