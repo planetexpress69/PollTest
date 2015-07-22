@@ -19,20 +19,20 @@ class ViewController: UIViewController {
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        payload()
+        fetchWrapper()
     }
 
-    func payload() {
+    func fetchWrapper() {
         println("New request")
-        fetchTask = fetch2({
+        fetchTask = fetch({
             (result, error) in
             if let ships = result as? [[String:AnyObject]] {
                 println("Got \(ships.count) ships")
             }
-
+            // wait a little and poll again
             let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(3 * Double(NSEC_PER_SEC)))
             dispatch_after(delayTime, dispatch_get_main_queue()) {
-                self.payload()
+                self.fetchWrapper()
             }
         })
         fetchTask.resume()
@@ -44,10 +44,8 @@ class ViewController: UIViewController {
     }
 
 
-    func fetch2(completionHandler: (AnyObject?, NSError?) -> Void ) -> NSURLSessionDataTask {
-
+    func fetch(completionHandler: (AnyObject?, NSError?) -> Void ) -> NSURLSessionDataTask {
         let session = NSURLSession.sharedSession()
-
         let urlString = "http://www.teambender.de/test.php"
         let url = NSURL(string: urlString)
         let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
@@ -62,8 +60,7 @@ class ViewController: UIViewController {
                     if let ret = json["return"] as? String {
                         println(ret.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
                         println("*******************");
-                        let bar = self.splitCSV(ret)
-                        completionHandler(nil, nil)
+                        completionHandler(self.splitCSV(ret), nil)
                     }
             }
         }
